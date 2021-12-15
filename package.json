@@ -1,0 +1,33 @@
+{
+  "name": "phaser_test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack --mode development --hot && webpack-dev-server --mode development --hot",
+    "wp": "webpack serve --open --mode development --hot",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "mon": "nodemon"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "copy-webpack-plugin": "^9.0.1",
+    "expose-loader": "^3.0.0",
+    "html-webpack-plugin": "^5.3.2",
+    "nodemon": "^2.0.13",
+    "phaser": "^3.55.2",
+    "socket.io": "^4.2.0",
+    "socket.io-client": "^4.2.0",
+    "ts-loader": "^9.2.6",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3",
+    "webpack": "^5.57.1",
+    "webpack-cli": "^4.8.0",
+    "webpack-dev-server": "^4.3.1"
+  },
+  "dependencies": {
+    "http": "^0.0.1-security"
+  }
+}

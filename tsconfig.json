@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "commonjs",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "strict": true,
+    "incremental": true,
+    "outDir": "./lib",
+    "traceResolution": false,
+    "strictPropertyInitialization": false
+  },
+  "include": ["./src/client", "./src/common", "./src/server"]
+}
