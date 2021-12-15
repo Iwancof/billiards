@@ -3,7 +3,7 @@ import * as title from "./scenes/title";
 import * as main from "./scenes/main";
 
 const config: Phaser.Types.Core.GameConfig = {
-  title: "biliblili",
+  title: "billiards",
   version: "0.0.1",
   width: 800,
   height: 800,
@@ -13,6 +13,9 @@ const config: Phaser.Types.Core.GameConfig = {
     target: 10,
   },
 
+  dom: {
+    createContainer: true
+  },
   physics: {
     default: 'arcade',
     arcade: {
@@ -20,7 +23,7 @@ const config: Phaser.Types.Core.GameConfig = {
     },
   },
 
-  scene: [main.MainScene],
+  scene: [title.TitleScene, main.MainScene],
 };
 
 export class Game extends Phaser.Game {

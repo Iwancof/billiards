@@ -1,25 +1,36 @@
-import { get } from "http";
 import { get_int, InitRelativeCoordinates, Logger, Level } from "../../common/my_util"
 import { CommandToServer, CommandToClient } from "../../common/command"
 import { io, Socket } from "socket.io-client"
 import { BallPacket } from "../../common/field";
-import { LEFT } from "phaser";
 
 export class MainScene extends Phaser.Scene {
   constructor() {
     super({
-      key: "MainScene"
+      key: "MainScene",
+      active: false
     })
   }
 
-  private balls: Phaser.Physics.Arcade.Sprite[] = new Array(0); // ball info
-  private table: Phaser.Physics.Arcade.Image; // table image
-  private port: number = 5000; // port
-  private url: string = "http://localhost"; // url
-  private socket: Socket; // server socket
+  init(data: any): void {
+    console.log(data);
+  }
+
+  // Parameters
   private restit_param = 0.95; // default setting ( overwrote by server )
   private drag_param = 0.7; // default settting ( overwrote by server )
+
+  // Communications
+  private port: number = 5000;
+  private url: string = "http://localhost";
+  private socket: Socket;
+
+  // Game objects
+  private balls: Phaser.Physics.Arcade.Sprite[] = new Array(0); // ball info
+  private table: Phaser.Physics.Arcade.Image; // table image
+
+  // Debug
   private log: Logger = new Logger();
+
 
   public make_ball_packet(): BallPacket[] {
     var ret: BallPacket[] = new Array(0);
@@ -125,10 +136,10 @@ export class MainScene extends Phaser.Scene {
 
     // create table
     let group = this.physics.add.staticGroup();
-    group.add(this.add.zone(this.table.x, this.table.y - this.table.height / 2, this.table.width, 1)) // Celling
-    group.add(this.add.zone(this.table.x - this.table.width / 2, this.table.y, 1, this.table.height)) // Left wall
-    group.add(this.add.zone(this.table.x, this.table.y + this.table.height / 2, this.table.width, 1)); // Floor
-    group.add(this.add.zone(this.table.x + this.table.width / 2, this.table.y, 1, this.table.height)); // Right wall
+    group.add(this.add.zone(this.table.x, this.table.y - this.table.height / 2 - 10, this.table.width, 21)) // Celling
+    group.add(this.add.zone(this.table.x - this.table.width / 2 - 10, this.table.y, 21, this.table.height)) // Left wall
+    group.add(this.add.zone(this.table.x, this.table.y + this.table.height / 2 + 10, this.table.width, 21)); // Floor
+    group.add(this.add.zone(this.table.x + this.table.width / 2 + 10, this.table.y, 21, this.table.height)); // Right wall
 
     for (let i = 1; i <= 9; i++) {
       this.physics.add.collider(this.balls[i], group);
