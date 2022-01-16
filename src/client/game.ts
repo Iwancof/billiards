@@ -23,7 +23,8 @@ const config: Phaser.Types.Core.GameConfig = {
     },
   },
 
-  scene: [title.TitleScene, main.MainScene],
+  // scene: [title.TitleScene, main.MainScene],
+  scene: [main.MainScene],
 };
 
 export class Game extends Phaser.Game {

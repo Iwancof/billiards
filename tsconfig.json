@@ -5,10 +5,15 @@
     "sourceMap": true,
     "noImplicitAny": true,
     "strict": true,
+    "noImplicitThis": true,
     "incremental": true,
     "outDir": "./lib",
     "traceResolution": false,
     "strictPropertyInitialization": false
   },
-  "include": ["./src/client", "./src/common", "./src/server"]
+  "include": [
+    "./src/client",
+    "./src/common",
+    "./src/server"
+  ]
 }

@@ -1,11 +1,11 @@
-import { io } from 'socket.io-client';
+import { CommandToClient } from "../../common/command"
+import { io } from "socket.io-client"
 
 export class TitleScene extends Phaser.Scene {
 
   constructor() {
     super({
       key: "TitleScene",
-      active: true,
     })
   }
 
@@ -23,7 +23,7 @@ export class TitleScene extends Phaser.Scene {
       const { target } = event;
       if (target instanceof HTMLInputElement) {
         if (target.name == "start_button") {
-          const ip = element.getChildByName("ip") as HTMLInputElement;
+          const url = element.getChildByName("url") as HTMLInputElement;
           const port = element.getChildByName("port") as HTMLInputElement;
 
           //  Turn off the click events
@@ -41,8 +41,47 @@ export class TitleScene extends Phaser.Scene {
 
           this.message.text = "Connecting....";
 
-          console.log(`${ip.value}:${port.value}`);
-          this.scene.start("MainScene", { ip: ip, port: port });
+          const sock = io(`${url.value}:${port.value}`);
+          const clear = setTimeout(() => {
+            this.message.text = "Can't connect server. Timeout!";
+            sock.close();
+          }, 5000);
+
+          var waiting_for_other_player = false;
+
+          // console.log(sock);
+
+          sock.on("ToClientCommand", (c: CommandToClient) => {
+            clearTimeout(clear);
+
+            if (c.cmd == "ha-Aretz") {
+              if (waiting_for_other_player == false) {
+                console.log("まってないが");
+                throw new Error("unexpected wait flag");
+              }
+              console.log("おまたせ。まった？");
+              sock.off("ToClientCommand");
+              this.scene.start("MainScene", { url: url, port: port, sock: sock });
+              return;
+            }
+
+            if (c.cmd != "ServerWaiting") {
+              console.log(`Invalid command received: ${c.cmd}`);
+              sock.close();
+              return;
+            }
+
+            if (c.first_player) {
+              this.message.text = "Waiting for other player...";
+              waiting_for_other_player = true
+              return; // wait for
+            }
+
+            sock.off("ToClientCommand");
+            // ok.
+            this.scene.start("MainScene", { url: url, port: port, sock: sock });
+            return;
+          });
         }
       }
     });
@@ -54,8 +93,16 @@ export class TitleScene extends Phaser.Scene {
       ease: 'Power3'
     });
   }
-
 }
 
 
 
+const getMethods = (obj: object): string[] => {
+  const getOwnMethods = (obj: object) =>
+    Object.entries(Object.getOwnPropertyDescriptors(obj))
+      .filter(([name, { value }]) => typeof value === 'function' && name !== 'constructor')
+      .map(([name]) => name)
+  const _getMethods = (o: object, methods: string[]): string[] =>
+    o === Object.prototype ? methods : _getMethods(Object.getPrototypeOf(o), methods.concat(getOwnMethods(o)))
+  return _getMethods(obj, [])
+}

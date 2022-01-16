@@ -7,7 +7,8 @@
     "dev": "webpack --mode development --hot && webpack-dev-server --mode development --hot",
     "wp": "webpack serve --open --mode development --hot",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "mon": "nodemon"
+    "mon": "nodemon",
+    "start": "run-s wp mon" 
   },
   "keywords": [],
   "author": "",
@@ -17,6 +18,7 @@
     "expose-loader": "^3.0.0",
     "html-webpack-plugin": "^5.3.2",
     "nodemon": "^2.0.13",
+    "npm-run-all": "^4.1.5",
     "phaser": "^3.55.2",
     "socket.io": "^4.2.0",
     "socket.io-client": "^4.2.0",

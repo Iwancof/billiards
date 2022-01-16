@@ -14,6 +14,31 @@ InitRelativeCoordinates[7] = [-BallSize, BallSize / 2];
 InitRelativeCoordinates[8] = [-BallSize, -BallSize / 2];
 InitRelativeCoordinates[9] = [0, 0];
 
+export const TABLE_XCENTER: number = 400;
+export const TABLE_YCENTER: number = 400;
+
+export const BALL_WIDHT: number = 30;
+export const BALL_HEIGHT: number = 30;
+
+const FieldWidth = 691;
+const FieldHeight = 361;
+export const PocketRelativeCoordinate: [number, number][] = [];
+/*
+ *  0       1        2
+ *
+ *    balls
+ *
+ *  3       4        5
+ */
+
+
+PocketRelativeCoordinate[0] = [-FieldWidth / 2, -FieldHeight / 2];
+PocketRelativeCoordinate[1] = [0, -FieldHeight / 2];
+PocketRelativeCoordinate[2] = [FieldWidth / 2, -FieldHeight / 2];
+PocketRelativeCoordinate[3] = [-FieldWidth / 2, FieldHeight / 2];
+PocketRelativeCoordinate[4] = [0, FieldHeight / 2];
+PocketRelativeCoordinate[5] = [FieldWidth / 2, FieldHeight / 2];
+
 /*
     at get_call_stack (/home/iwancof/WorkSpace/game_create_project/game/src/common/my_util.ts:19:11)
     at Logger.log_in (/home/iwancof/WorkSpace/game_create_project/game/src/common/my_util.ts:56:20)
@@ -74,10 +99,22 @@ export class Logger { // Simple Logger
     if (this.log_level <= l) {
       console.log(`[${LevelName[l].padEnd(8, " ")}!${f}@${d}]: ${msg.toString()}`);
     }
-
   }
   public deb(msg: { toString(): string }) {
-    this.log_in(msg, Level.Debug);
+    const [f, d] = get_call_stack();
+    if (this.log_level <= Level.Debug) {
+      console.log(`[${LevelName[Level.Debug].padEnd(8, " ")}!${f}@${d}]: ${msg.toString()}`);
+    }
   }
 }
+
+let caller_set = new Set<string>();
+export function check_twice_call(): boolean {
+  const [f, d] = get_call_stack();
+  const ret = caller_set.has(`${[f, d]}`);
+  caller_set.add(`${[f, d]}`);
+
+  return ret;
+}
+
 

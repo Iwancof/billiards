@@ -1,7 +1,8 @@
 import { BallPacket } from "./field";
 
 export type CommandToClient =
-  { cmd: "ServerWaiting" } |
+  { cmd: "ServerWaiting", first_player: boolean } |
+  { cmd: "ha-Aretz" } |
   { cmd: "PrepareStart" } |
   { cmd: "ReplyParameter", restit: number, drag: number } |
   { cmd: "ServerReady" } |
@@ -9,6 +10,7 @@ export type CommandToClient =
 
 export type CommandToServer =
   { cmd: "RequestParameter" } |
+  { cmd: "ClientListenerReady" } |
   { cmd: "ClientReady" } |
   { cmd: "RequestGameStatus" } |
   { cmd: "BallCoordinate", packet: BallPacket[] };
