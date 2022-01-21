@@ -39,7 +39,8 @@ module.exports = [{
     },
     historyApiFallback: true,
     hot: true,
-    host: "127.0.0.1",
+    // host: "127.0.0.1",
+    host: "0.0.0.0",
     port: 9000,
     open: true
   },

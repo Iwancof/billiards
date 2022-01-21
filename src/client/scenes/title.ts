@@ -1,5 +1,5 @@
 import { CommandToClient } from "../../common/command"
-import { io } from "socket.io-client"
+import { io, Manager, Socket } from "socket.io-client"
 
 export class TitleScene extends Phaser.Scene {
 
@@ -39,9 +39,10 @@ export class TitleScene extends Phaser.Scene {
             }
           });
 
-          this.message.text = "Connecting....";
+          this.message.text = "Connecting....\n";
 
-          const sock = io(`${url.value}:${port.value}`);
+          const sock = io(`ws://${url.value}:${port.value}`, { forceNew: true, autoConnect: false });
+
           const clear = setTimeout(() => {
             this.message.text = "Can't connect server. Timeout!";
             sock.close();
@@ -49,16 +50,17 @@ export class TitleScene extends Phaser.Scene {
 
           var waiting_for_other_player = false;
 
-          // console.log(sock);
-
           sock.on("ToClientCommand", (c: CommandToClient) => {
             clearTimeout(clear);
+            this.message.text += `got` + c.cmd + "\n";
 
             if (c.cmd == "ha-Aretz") {
               if (waiting_for_other_player == false) {
                 console.log("まってないが");
+                this.message.text = "Error! We are not waiting for other player, but got ha-Aretz.";
                 throw new Error("unexpected wait flag");
               }
+              this.message.text = "Other player is ready.\n";
               console.log("おまたせ。まった？");
               sock.off("ToClientCommand");
               this.scene.start("MainScene", { url: url, port: port, sock: sock });
@@ -76,12 +78,16 @@ export class TitleScene extends Phaser.Scene {
               waiting_for_other_player = true
               return; // wait for
             }
+            this.message.text = "Other player is ready.\n";
 
             sock.off("ToClientCommand");
             // ok.
             this.scene.start("MainScene", { url: url, port: port, sock: sock });
             return;
           });
+
+          this.message.text += "listener set.\n";
+          sock.connect();
         }
       }
     });

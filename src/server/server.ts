@@ -26,6 +26,7 @@ const getMethods = (obj: object): string[] => {
 let socket1_ready: boolean = false;
 let s1: socketio.Socket;
 io.on('connection', (socket: socketio.Socket) => {
+
   if (socket1_ready) {
     socket1_ready = false;
 
@@ -39,7 +40,7 @@ io.on('connection', (socket: socketio.Socket) => {
     socket1_ready = true;
     s1 = socket;
 
-    console.log(`got s1:${s1.id}:${s1.conn.port}`);
+    console.log(`got s1:${s1.id}:${s1.conn}`);
     s1.emit("ToClientCommand", { cmd: "ServerWaiting", first_player: true });
   }
 });

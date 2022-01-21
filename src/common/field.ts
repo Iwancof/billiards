@@ -1,5 +1,5 @@
 
-export class BallPacket {
+export class BallCoordinate {
   x: number;
   y: number;
   vx: number;
@@ -12,6 +12,14 @@ export class BallPacket {
     this.vy = vy;
   }
 }
+export type BallPacket = BallCoordinate | null;
+export type Turn = 1 | 2;
 
+export type SyncPacket = {
+  balls: BallPacket[],
+  pockets: number[],
+  fouls: FoulType[],
+};
 
+export type FoulType = "NoHit" | "WhiteOut";
 

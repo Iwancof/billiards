@@ -95,26 +95,63 @@ const LevelName: string[] = ["Debug", "Notice", "Warning", "Error", "Critical"];
 export class Logger { // Simple Logger
   public log_level: number = Level.Debug;
   public log_in(msg: { toString(): string }, l: number) {
-    const [f, d] = get_call_stack();
-    if (this.log_level <= l) {
-      console.log(`[${LevelName[l].padEnd(8, " ")}!${f}@${d}]: ${msg.toString()}`);
+    try {
+      const [f, d] = get_call_stack();
+      if (this.log_level <= l) {
+        console.log(`[${LevelName[l].padEnd(8, " ")}!${f}@${d}]: ${msg.toString()}`);
+      }
+    } catch (e) {
+      console.log(`[${LevelName[l].padEnd(8, " ")}!${0}@${0}]: ${msg.toString()}`);
     }
   }
   public deb(msg: { toString(): string }) {
-    const [f, d] = get_call_stack();
-    if (this.log_level <= Level.Debug) {
-      console.log(`[${LevelName[Level.Debug].padEnd(8, " ")}!${f}@${d}]: ${msg.toString()}`);
+    try {
+      const [f, d] = get_call_stack();
+      if (this.log_level <= Level.Debug) {
+        console.log(`[${LevelName[Level.Debug].padEnd(8, " ")}!${f}@${d}]: ${msg.toString()}`);
+      }
+    } catch (e) {
+      console.log(`[${LevelName[Level.Debug].padEnd(8, " ")}!${0}@${0}]: ${msg.toString()}`);
     }
   }
 }
 
 let caller_set = new Set<string>();
 export function check_twice_call(): boolean {
-  const [f, d] = get_call_stack();
-  const ret = caller_set.has(`${[f, d]}`);
-  caller_set.add(`${[f, d]}`);
+  try {
+    const [f, d] = get_call_stack();
+    const ret = caller_set.has(`${[f, d]}`);
+    caller_set.add(`${[f, d]}`);
 
-  return ret;
+    return ret;
+  } catch (e) {
+    return false;
+  }
 }
+
+export class EffectConditionController<ConditionType> {
+  private check_func: (c: ConditionType) => boolean;
+  private ignition_func: () => void;
+  private prevent_twice: boolean = false;
+
+
+  constructor(condition: () => (c: ConditionType) => boolean, ignition: () => void, prevent_twice: boolean = false) {
+    this.check_func = condition();
+    this.ignition_func = ignition;
+    this.prevent_twice = prevent_twice;
+  }
+
+  public check(c: ConditionType): boolean {
+    if (this.check_func(c)) {
+      if (this.prevent_twice && check_twice_call()) {
+        throw new Error("Twice call");
+      }
+      this.ignition_func();
+      return true;
+    }
+    return false;
+  }
+}
+
 
 
